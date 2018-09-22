@@ -13,9 +13,29 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core Tool Installer'
+
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+
+    projects: '$(Parameters.RestoreBuildProjects)'
 - script: |
     dotnet build --configuration $(buildConfiguration)
     dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
 
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
