@@ -21,10 +21,14 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-
     projects: '$(Parameters.RestoreBuildProjects)'
-- script: |
-    dotnet build --configuration $(buildConfiguration)
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(Parameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
 
 - task: DotNetCoreCLI@2
   displayName: Publish
